@@ -132,19 +132,19 @@
             Date: date,
             Payee: payee,
             Memo: memo,
-            Outflow: (amount < 0 ? Math.abs(amount) : 0).toString(),
-            Inflow:  (amount < 0 ? 0 : Math.abs(amount)).toString()
+            Outflow: Math.abs(Math.min(amount, 0)).toString(),
+            Inflow:  Math.abs(Math.max(amount, 0)).toString()
           });
         }
-
-        data = {
-          name: name,
-          dkb:  { cols: dkbcols,  rows: dkbrows  },
-          ynab: { cols: ynabcols, rows: ynabrows },
-        };
       } catch (e) {
         error = String(e);
       }
+
+      data = {
+        name: name,
+        dkb:  { cols: dkbcols,  rows: dkbrows  },
+        ynab: { cols: ynabcols, rows: ynabrows },
+      };
     }}
     onError={(message) => {
       error = message;
