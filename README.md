@@ -4,11 +4,11 @@ Transform DKB transaction CSV files so that YNAB can understand them.
 
 ## Use online
 
-- https://jurihock.de/dkb-csv-ynab
-- https://jurihock.github.io/dkb-csv-ynab
+https://jurihock.de/dkb-csv-ynab  
+https://jurihock.github.io/dkb-csv-ynab
 
 > [!NOTE]
-> This website doesn't use any cookies or any other tracking technologies.
+> This website doesn't use any cookies or any other tracking technologies.  
 > Your data is processed locally in your browser and isn't sent anywhere else.
 
 ## Run offline
