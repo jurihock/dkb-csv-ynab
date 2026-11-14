@@ -73,16 +73,27 @@
   onclick={() => fileInput.click()}
   onkeydown={(e) => e.key === 'Enter' && fileInput.click()}
 >
-  <input
-    bind:this={fileInput}
-    type="file"
-    accept=".csv,text/csv"
-    onchange={handleFileInput}
-    hidden
-  />
-  {#if isDragging}
-    <p>Drop your DKB CSV file here...</p>
-  {:else}
-    <p>Drag & drop a DKB CSV file here,<br>or click to browse...</p>
-  {/if}
+  <header>
+    <input
+      bind:this={fileInput}
+      type="file"
+      accept=".csv,text/csv"
+      onchange={handleFileInput}
+      hidden
+    />
+    {#if isDragging}
+      <h1>Drop your DKB CSV file here...</h1>
+    {:else}
+      <h1>Drag & drop a DKB CSV file here, or click to browse...</h1>
+    {/if}
+  </header>
+  <footer>
+    <p class="text-muted-foreground">
+      This website converts DKB transaction CSV files into a YNAB compatible CSV format.
+    </p>
+    <p class="text-muted-foreground">
+      It doesn't use any cookies or any other tracking technologies.
+      Your data is processed locally in your browser and isn't sent anywhere else.
+    </p>
+  </footer>
 </div>

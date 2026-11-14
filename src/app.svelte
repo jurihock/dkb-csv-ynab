@@ -1,5 +1,8 @@
 <script lang="ts">
 
+  import IconX from './assets/dkb.ico';
+  import IconY from './assets/ynab.ico';
+
   import Drop from './lib/drop.svelte'
   import Table from './lib/table.svelte'
 
@@ -41,8 +44,8 @@
 
 {#if error}
 
-  <div class="flex flex-col min-h-screen w-full">
-    <p class="empty">{error}</p>
+  <div class="empty flex flex-col min-h-screen w-full">
+    <p>{error}</p>
   </div>
 
 {:else if data}
@@ -55,7 +58,13 @@
         <button type="button" class="btn" data-variant="outline" onclick={download}>Download</button>
         <div role="group" class="field" data-orientation="horizontal">
           <input id="ynab" type="checkbox" role="switch" class="input" bind:checked={ynab}/>
-          <label for="ynab">{ynab ? 'YNAB' : 'DKB'}</label>
+          <label for="ynab">
+             {#if ynab}
+              <img class="icon" src={IconY} alt="YNAB"/>
+            {:else}
+              <img class="icon" src={IconX} alt="DKB"/>
+            {/if}
+          </label>
         </div>
       </div>
     </header>

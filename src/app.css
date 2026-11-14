@@ -1,2 +1,8 @@
 @import "tailwindcss";
 @import "basecoat-css";
+
+.icon {
+  height: 1.25rem;
+  width: auto;
+  display: block;
+}
