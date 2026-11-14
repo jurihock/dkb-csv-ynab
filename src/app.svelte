@@ -124,7 +124,7 @@
       try {
         for (let i = 0; i < dkbrows.length; i++) {
           const dkbrow = dkbrows[i];
-          const date = parseGermanDate(dkbrow['Buchungsdatum'] || dkbrow['Wertstellung'] || '');
+          const date = parseGermanDate(dkbrow['Wertstellung'] || dkbrow['Buchungsdatum'] || '');
           const payee = dkbrow['Zahlungsempfänger*in'] || dkbrow['IBAN'] || '';
           const memo = dkbrow['Verwendungszweck'] || '';
           const amount = parseGermanAmount(dkbrow['Betrag (€)'] || dkbrow['Betrag'] || '');
