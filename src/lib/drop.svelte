@@ -65,7 +65,7 @@
 <div
   role="button"
   tabindex="0"
-  class="flex flex-col min-h-screen w-full"
+  class="empty flex flex-col min-h-screen w-full"
   class:dragging={isDragging}
   ondragover={(e) => { e.preventDefault(); isDragging = true; }}
   ondragleave={() => (isDragging = false)}
@@ -80,8 +80,9 @@
     onchange={handleFileInput}
     hidden
   />
-  <p class="empty">{isDragging
-    ? 'Drop your DKB CSV file here...'
-    : 'Drag & drop a DKB CSV file here or click to browse...'}
-  </p>
+  {#if isDragging}
+    <p>Drop your DKB CSV file here...</p>
+  {:else}
+    <p>Drag & drop a DKB CSV file here,<br>or click to browse...</p>
+  {/if}
 </div>
