@@ -50,7 +50,8 @@
   <div class="card">
 
     <header>
-      <div class="flex w-fit items-stretch gap-5">
+      <div class="flex w-fit items-stretch gap-3">
+        <a class="btn" data-variant="outline" href="{import.meta.env.BASE_URL}">Upload</a>
         <button type="button" class="btn" data-variant="outline" onclick={download}>Download</button>
         <div role="group" class="field" data-orientation="horizontal">
           <input id="ynab" type="checkbox" role="switch" class="input" bind:checked={ynab}/>
