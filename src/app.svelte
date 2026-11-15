@@ -10,6 +10,83 @@
   let error = $state<string>('');
   let ynab = $state(true);
 
+  function update(dkbcols: string[], dkbrows: Record<string, string>[], name: string) {
+    function parseGermanDate(date: string) {
+      let [day, month, year] = date.split('.').map(Number);
+      if (year < 100) {
+        year += 2000;
+      }
+      return [
+        String(year),
+        String(month).padStart(2, '0'),
+        String(day).padStart(2, '0')
+      ].join('-');
+    }
+
+    const parseGermanAmount = (amount: string) => {
+      if (!amount) {
+        return 0;
+      }
+      return parseFloat(amount
+        .replace(/[^\d,-]/g, '') // remove currency symbols or spaces
+        .replace(/\./g, '')      // remove thousands separator
+        .replace(',', '.')       // replace decimal comma with dot
+      );
+    };
+
+    // --------------------------------------------------------------
+    // DKB columns
+    // https://github.com/hamvocke/dkb2homebank/tree/master/testfiles
+    // --------------------------------------------------------------
+    // Buchungsdatum
+    // Wertstellung
+    // Status
+    // Zahlungspflichtige*r
+    // Zahlungsempfänger*in
+    // Verwendungszweck
+    // Umsatztyp
+    // IBAN
+    // Betrag (€)
+    // Gläubiger-ID
+    // Mandatsreferenz
+    // Kundenreferenz
+
+    // ----------------------------------------------------------------------
+    // YNAB columns
+    // https://support.ynab.com/en_us/file-based-import-a-guide-Bkj4Sszyo#csv
+    // ----------------------------------------------------------------------
+    const ynabcols = ['Date', 'Payee', 'Memo', 'Outflow', 'Inflow'];
+    const ynabrows = [];
+
+    error = '';
+
+    try {
+      for (let i = 0; i < dkbrows.length; i++) {
+        const dkbrow = dkbrows[i];
+        const date = parseGermanDate(dkbrow['Wertstellung'] || dkbrow['Buchungsdatum'] || '');
+        const payee = dkbrow['Zahlungsempfänger*in'] || dkbrow['IBAN'] || '';
+        const memo = dkbrow['Verwendungszweck'] || '';
+        const amount = parseGermanAmount(dkbrow['Betrag (€)'] || dkbrow['Betrag'] || '');
+
+        ynabrows.push({
+          Date: date,
+          Payee: payee,
+          Memo: memo,
+          Outflow: Math.abs(Math.min(amount, 0)).toString(),
+          Inflow:  Math.abs(Math.max(amount, 0)).toString()
+        });
+      }
+    } catch (e) {
+      error = String(e);
+    }
+
+    data = {
+      name: name,
+      dkb:  { cols: dkbcols,  rows: dkbrows  },
+      ynab: { cols: ynabcols, rows: ynabrows },
+    };
+  }
+
   function download() {
     if (!data) {
       return;
@@ -51,7 +128,6 @@
 {:else if data}
 
   <div class="card">
-
     <header>
       <div class="flex w-fit items-stretch gap-3">
         <a class="btn" data-variant="outline" href="{import.meta.env.BASE_URL}">Upload</a>
@@ -68,7 +144,6 @@
         </div>
       </div>
     </header>
-
     <section>
       {#if ynab}
         <Table cols={data.ynab.cols} rows={data.ynab.rows}/>
@@ -76,89 +151,10 @@
         <Table cols={data.dkb.cols} rows={data.dkb.rows}/>
       {/if}
     </section>
-
   </div>
 
 {:else}
 
-  <Drop
-    onDrop={(dkbcols, dkbrows, name) => {
-      error = '';
-
-      function parseGermanDate(date: string) {
-        let [day, month, year] = date.split('.').map(Number);
-
-        if (year < 100) {
-          year += 2000;
-        }
-
-        return `${String(year)}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      }
-
-      const parseGermanAmount = (amount: string) => {
-        if (!amount) {
-          return 0;
-        }
-        return parseFloat(amount
-          .replace(/[^\d,-]/g, '') // remove currency symbols or spaces
-          .replace(/\./g, '')      // remove thousands separator
-          .replace(',', '.')       // replace decimal comma with dot
-        );
-      };
-
-      // --------------------------------------------------------------
-      // DKB columns
-      // https://github.com/hamvocke/dkb2homebank/tree/master/testfiles
-      // --------------------------------------------------------------
-      // Buchungsdatum
-      // Wertstellung
-      // Status
-      // Zahlungspflichtige*r
-      // Zahlungsempfänger*in
-      // Verwendungszweck
-      // Umsatztyp
-      // IBAN
-      // Betrag (€)
-      // Gläubiger-ID
-      // Mandatsreferenz
-      // Kundenreferenz
-
-      // ----------------------------------------------------------------------
-      // YNAB columns
-      // https://support.ynab.com/en_us/file-based-import-a-guide-Bkj4Sszyo#csv
-      // ----------------------------------------------------------------------
-      const ynabcols = ['Date', 'Payee', 'Memo', 'Outflow', 'Inflow'];
-      const ynabrows = [];
-
-      try {
-        for (let i = 0; i < dkbrows.length; i++) {
-          const dkbrow = dkbrows[i];
-          const date = parseGermanDate(dkbrow['Wertstellung'] || dkbrow['Buchungsdatum'] || '');
-          const payee = dkbrow['Zahlungsempfänger*in'] || dkbrow['IBAN'] || '';
-          const memo = dkbrow['Verwendungszweck'] || '';
-          const amount = parseGermanAmount(dkbrow['Betrag (€)'] || dkbrow['Betrag'] || '');
-
-          ynabrows.push({
-            Date: date,
-            Payee: payee,
-            Memo: memo,
-            Outflow: Math.abs(Math.min(amount, 0)).toString(),
-            Inflow:  Math.abs(Math.max(amount, 0)).toString()
-          });
-        }
-      } catch (e) {
-        error = String(e);
-      }
-
-      data = {
-        name: name,
-        dkb:  { cols: dkbcols,  rows: dkbrows  },
-        ynab: { cols: ynabcols, rows: ynabrows },
-      };
-    }}
-    onError={(message) => {
-      error = message;
-    }}
-  />
+  <Drop onDrop={update} onError={(message) => error = message}/>
 
 {/if}
