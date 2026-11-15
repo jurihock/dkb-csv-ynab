@@ -43,7 +43,7 @@ npm run dev
 | DKB | YNAB | Format |
 | --- | ---- | ------ |
 | `Wertstellung` or `Buchungsdatum` | `Date` | `YYYY-MM-DD` |
-| `Zahlungsempfänger*in` or `IBAN` | `Payee` | |
+| `Zahlungsempfänger*in` or `Zahlungspflichtige*r` or `IBAN` | `Payee` | |
 | `Verwendungszweck` | `Memo` | |
 | `Betrag (€)` or `Betrag` | `Outflow` | `≤ 0` `1234.56` |
 | `Betrag (€)` or `Betrag` | `Inflow` | `≥ 0` `1234.56` |

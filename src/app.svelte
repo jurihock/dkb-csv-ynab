@@ -64,9 +64,11 @@
       for (let i = 0; i < dkbrows.length; i++) {
         const dkbrow = dkbrows[i];
         const date = parseGermanDate(dkbrow['Wertstellung'] || dkbrow['Buchungsdatum'] || '');
-        const payee = dkbrow['Zahlungsempfänger*in'] || dkbrow['IBAN'] || '';
-        const memo = dkbrow['Verwendungszweck'] || '';
         const amount = parseGermanAmount(dkbrow['Betrag (€)'] || dkbrow['Betrag'] || '');
+        const payee = amount > 0
+          ? dkbrow['Zahlungspflichtige*r'] || dkbrow['IBAN'] || ''
+          : dkbrow['Zahlungsempfänger*in'] || dkbrow['IBAN'] || '';
+        const memo = dkbrow['Verwendungszweck'] || '';        
 
         ynabrows.push({
           Date: date,
