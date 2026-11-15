@@ -68,8 +68,10 @@
         const payee = amount > 0
           ? dkbrow['Zahlungspflichtige*r'] || dkbrow['IBAN'] || ''
           : dkbrow['Zahlungsempfänger*in'] || dkbrow['IBAN'] || '';
-        const memo = dkbrow['Verwendungszweck'] || '';        
-
+        const memo = dkbrow['Verwendungszweck'] || '';
+        if (amount === 0) {
+          continue;
+        }
         ynabrows.push({
           Date: date,
           Payee: payee,
